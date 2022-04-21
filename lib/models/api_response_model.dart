@@ -9,6 +9,8 @@ class ApiResponse<T> {
 
   ApiResponse.loading(this.message) : status = ApiResponseStatus.loading;
 
+  ApiResponse.notFound() : status = ApiResponseStatus.notFound;
+
   ApiResponse.completed(this.data) : status = ApiResponseStatus.completed;
 
   ApiResponse.unProcessable(this.message) : status = ApiResponseStatus.unProcessable;

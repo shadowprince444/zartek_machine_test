@@ -1,3 +1,6 @@
+import 'package:zartek_machine_test/models/hive/add_on_hive_model.dart';
+import 'package:zartek_machine_test/models/hive/dish_order_hive_model.dart';
+
 class RestaurantMenuModel {
   RestaurantMenuModel({
     required this.restaurantId,
@@ -89,20 +92,34 @@ class CategoryDishes {
     required this.dishType,
     required this.nexturl,
     required this.addonCat,
+    this.quantity = 0,
   });
+
   late final String dishId;
+
   late final String dishName;
+
   late final double? dishPrice;
+
   late final String dishImage;
+
   late final String dishCurrency;
-  late final int dishCalories;
+
+  late final double dishCalories;
+
   late final String dishDescription;
+
   late final bool dishAvailability;
+
   late final int dishType;
+
   late final String nexturl;
+
   late final List<AddonCat> addonCat;
 
-  CategoryDishes.fromJson(Map<String, dynamic> json) {
+  late int quantity;
+
+  CategoryDishes.fromJson(Map<String, dynamic> json, {this.quantity = 0}) {
     dishId = json['dish_id'];
     dishName = json['dish_name'];
     dishPrice = json['dish_price'];
@@ -114,6 +131,18 @@ class CategoryDishes {
     dishType = json['dish_Type'];
     nexturl = json['nexturl'];
     addonCat = List.from(json['addonCat']).map((e) => AddonCat.fromJson(e)).toList();
+  }
+  DishOrderHiveModel dishOrderHiveModelFromDishModel(String menuId) {
+    return DishOrderHiveModel()
+      ..quantity = 1
+      ..dishId = dishId
+      ..dishCalories = dishCalories
+      ..dishType = dishType
+      ..dishPrice = dishPrice ?? 0
+      ..dishName = dishName
+      ..dishImageUrl = dishImage
+      ..addOns = <AddOnHiveModel>[]
+      ..menuCategoryId = menuId;
   }
 
   Map<String, dynamic> toJson() {
@@ -129,6 +158,7 @@ class CategoryDishes {
     _data['dish_Type'] = dishType;
     _data['nexturl'] = nexturl;
     _data['addonCat'] = addonCat.map((e) => e.toJson()).toList();
+
     return _data;
   }
 }
@@ -180,10 +210,10 @@ class Addons {
   });
   late final String dishId;
   late final String dishName;
-  late final int dishPrice;
+  late final double dishPrice;
   late final String dishImage;
   late final String dishCurrency;
-  late final int dishCalories;
+  late final double dishCalories;
   late final String dishDescription;
   late final bool dishAvailability;
   late final int dishType;
@@ -198,6 +228,17 @@ class Addons {
     dishDescription = json['dish_description'];
     dishAvailability = json['dish_Availability'];
     dishType = json['dish_Type'];
+  }
+
+  AddOnHiveModel fromAddOnModel(String catId) {
+    return AddOnHiveModel()
+      ..dishId = dishId
+      ..addOnCalories = dishCalories
+      ..addOnId = catId
+      ..addOnType = dishType
+      ..addOnPrice = dishPrice
+      ..addOnName = dishDescription
+      ..quantity = 1;
   }
 
   Map<String, dynamic> toJson() {

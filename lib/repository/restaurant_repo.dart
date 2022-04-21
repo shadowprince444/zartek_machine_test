@@ -1,4 +1,4 @@
-import 'package:zartek_machine_test/interfaces/irestaurant.dart';
+import 'package:zartek_machine_test/interfaces/i_restaurant.dart';
 import 'package:zartek_machine_test/models/api_response_model.dart';
 import 'package:zartek_machine_test/models/menu_model.dart';
 import 'package:zartek_machine_test/services/dio_client/dio_client.dart';
@@ -13,7 +13,7 @@ class RestaurantRepo implements IRestaurant {
     try {
       final res = await _dioClient.request(
         uri: Uri.parse(ApiUrls.getRestaurantMenuListURI),
-        method: APIMethod.GET,
+        method: APIMethod.get,
       );
       var tempList = <RestaurantMenuModel>[];
       for (Map<String, dynamic> restaurantData in res.data) {

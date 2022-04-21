@@ -49,19 +49,19 @@ class DioClient {
     Response? response;
 
     try {
-      if (method == APIMethod.POST) {
+      if (method == APIMethod.post) {
         response = await (_dioWithoutToken).postUri(
           uri,
           data: formData ?? params,
         );
-      } else if (method == APIMethod.PUT) {
+      } else if (method == APIMethod.put) {
         response = await (_dioWithoutToken).putUri(
           uri,
           data: formData ?? params,
         );
-      } else if (method == APIMethod.DELETE) {
+      } else if (method == APIMethod.delete) {
         response = await (_dioWithoutToken).deleteUri(uri);
-      } else if (method == APIMethod.PATCH) {
+      } else if (method == APIMethod.patch) {
         response = await (_dioWithoutToken).patchUri(uri);
       } else {
         response = await (_dioWithoutToken).getUri(uri);
