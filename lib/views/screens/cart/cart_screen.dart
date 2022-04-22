@@ -14,6 +14,9 @@ import 'package:zartek_machine_test/utils/widgets/responsive_safe_area.dart';
 import 'package:zartek_machine_test/utils/widgets/spacing_widgets.dart';
 import 'package:zartek_machine_test/views/widgets/app_custom_button.dart';
 import 'package:zartek_machine_test/views/widgets/counter_widget.dart';
+import 'package:zartek_machine_test/views/widgets/custom_dialogue_box.dart';
+import 'package:zartek_machine_test/views/widgets/custom_side_rounded_rectangular_button.dart';
+import 'package:zartek_machine_test/views/widgets/separator_widget.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -24,6 +27,15 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: AppTheme.appColors.blackTextColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           "Order Summary",
           style: AppTheme.textThemes.headline2.copyWith(color: AppTheme.appColors.greyTextColor),
@@ -93,102 +105,14 @@ class CartScreen extends StatelessWidget {
                                         itemCount: orderModel.orderListMap.length,
                                         itemBuilder: (context, index) {
                                           var dish = orderModel.orderListMap[index];
-                                          return SizedBox(
-                                            // height: 200.vdp(),
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 16.vdp()),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    width: 24.hdp(),
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(
-                                                        6.vdp(),
-                                                      ),
-                                                      child: Image.asset(
-                                                        dish.dishType == 2 ? "assets/images/veg_icon.png" : "assets/images/non_veg_icon.png",
-                                                        fit: BoxFit.fitHeight,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          dish.dishName,
-                                                          style: AppTheme.textThemes.headline1,
-                                                          maxLines: 4,
-                                                        ),
-                                                        const VSpace(8),
-                                                        Text(
-                                                          "INR ${dish.dishPrice}",
-                                                          style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
-                                                        ),
-                                                        const VSpace(8),
-                                                        Text(
-                                                          "${dish.dishCalories} calories",
-                                                          style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
-                                                        ),
-                                                        const VSpace(24),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  ValueListenableBuilder<Box<OrderModel>>(
-                                                      valueListenable: HiveService.getOrderBox().listenable(),
-                                                      builder: (context, box, _) {
-                                                        int count = 0;
-                                                        final isOrderPresentInCart = box
-                                                                .get(menuController.selectedRestaurant?.restaurantId)
-                                                                ?.orderListMap
-                                                                .where((element) => element.dishId == dish.dishId)
-                                                                .isNotEmpty ??
-                                                            false;
-                                                        if (isOrderPresentInCart) {
-                                                          count = orderModel!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
-                                                        }
-                                                        return CounterWidget(
-                                                          onTapAdd: () async {
-                                                            final categoryDishModel = getCategoryDishModel(menuController, dish);
-
-                                                            await menuController.onTapAdd(
-                                                                box, categoryDishModel, dish.menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
-                                                          },
-                                                          onTapRemove: () async {
-                                                            final categoryDishModel = getCategoryDishModel(menuController, dish);
-                                                            await menuController.onTapRemove(box, categoryDishModel);
-                                                          },
-                                                          count: count,
-                                                        );
-                                                      }),
-                                                  SizedBox(
-                                                    width: 80.vdp(),
-                                                    child: Text(
-                                                      "INR ${(dish.dishPrice * dish.quantity).toStringAsFixed(2)}",
-                                                      textAlign: TextAlign.center,
-                                                      style: AppTheme.textThemes.headline1.copyWith(fontWeight: FontWeight.w600),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          );
+                                          return buildCartedItemsTile(dish, menuController, orderModel);
                                         },
                                         separatorBuilder: (context, index) => Padding(
                                           padding: EdgeInsets.symmetric(
                                             vertical: 12.vdp(),
                                             horizontal: 16.vdp(),
                                           ),
-                                          child: ColoredBox(
-                                            color: AppTheme.appColors.greyIconColor,
-                                            child: SizedBox(
-                                              height: .5.vdp(),
-                                              width: double.infinity,
-                                            ),
-                                          ),
+                                          child: const SeparatorWidget(),
                                         ),
                                       ))),
                               Padding(
@@ -221,7 +145,7 @@ class CartScreen extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        "INR ${orderModel.totalPrice}",
+                                        "INR ${orderModel.totalPrice.toStringAsFixed(2)}",
                                         style: AppTheme.textThemes.headline1.copyWith(
                                           color: AppTheme.appColors.darkGreenTextColor,
                                         ),
@@ -239,6 +163,35 @@ class CartScreen extends StatelessWidget {
                         title: "Place Order",
                         textColor: Colors.white,
                         onTap: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CustomDialogueBox(
+                                      buttonList: [
+                                        CustomSideRoundedRectangularButton(
+                                          childWidget: Text(
+                                            "Okay",
+                                            style: AppTheme.textThemes.headline1,
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          bottomLeftRadius: AppTheme.dialogBorderRadius,
+                                          bottomRightRadius: AppTheme.dialogBorderRadius,
+                                        )
+                                      ],
+                                      icon: Icon(
+                                        Icons.check_circle_rounded,
+                                        color: AppTheme.appColors.notificationGreen,
+                                        size: 60,
+                                      ),
+                                      subtitle: Text(
+                                        "Visit My Orders for more details",
+                                        style: AppTheme.textThemes.headline1,
+                                      ),
+                                      title: Text(
+                                        "Order Placed Successfully",
+                                        style: AppTheme.textThemes.headline1,
+                                      )));
                           await orderModel.delete();
                         },
                       ),
@@ -252,6 +205,86 @@ class CartScreen extends StatelessWidget {
               },
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCartedItemsTile(DishOrderHiveModel dish, MenuProviderController menuController, OrderModel orderModel) {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.vdp()),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 24.hdp(),
+              child: Container(
+                padding: EdgeInsets.all(
+                  6.vdp(),
+                ),
+                child: Image.asset(
+                  dish.dishType == 2 ? "assets/images/veg_icon.png" : "assets/images/non_veg_icon.png",
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    dish.dishName,
+                    style: AppTheme.textThemes.headline1,
+                    maxLines: 4,
+                  ),
+                  const VSpace(8),
+                  Text(
+                    "INR ${dish.dishPrice}",
+                    style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const VSpace(8),
+                  Text(
+                    "${dish.dishCalories} calories",
+                    style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const VSpace(24),
+                ],
+              ),
+            ),
+            ValueListenableBuilder<Box<OrderModel>>(
+                valueListenable: HiveService.getOrderBox().listenable(),
+                builder: (context, box, _) {
+                  int count = 0;
+                  final isOrderPresentInCart =
+                      box.get(menuController.selectedRestaurant?.restaurantId)?.orderListMap.where((element) => element.dishId == dish.dishId).isNotEmpty ?? false;
+                  if (isOrderPresentInCart) {
+                    count = orderModel!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
+                  }
+                  return CounterWidget(
+                    onTapAdd: () async {
+                      final categoryDishModel = getCategoryDishModel(menuController, dish);
+
+                      await menuController.onTapAdd(box, categoryDishModel, dish.menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
+                    },
+                    onTapRemove: () async {
+                      final categoryDishModel = getCategoryDishModel(menuController, dish);
+                      await menuController.onTapRemove(box, categoryDishModel);
+                    },
+                    count: count,
+                  );
+                }),
+            SizedBox(
+              width: 80.vdp(),
+              child: Text(
+                "INR ${(dish.dishPrice * dish.quantity).toStringAsFixed(2)}",
+                textAlign: TextAlign.center,
+                style: AppTheme.textThemes.headline1.copyWith(fontWeight: FontWeight.w600),
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zartek_machine_test/repository/log_in_repo.dart';
-import 'package:zartek_machine_test/repository/profile_repo.dart';
 import 'package:zartek_machine_test/utils/enums_and_constants/enums.dart';
 
 class SignInController with ChangeNotifier {

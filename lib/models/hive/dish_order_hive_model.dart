@@ -24,4 +24,27 @@ class DishOrderHiveModel extends HiveObject {
   late int quantity;
   @HiveField(8)
   late String menuCategoryId;
+
+// Map<String, dynamic> toJson() {
+//   return {
+//     "dishId": dishId,
+//     "dishName": dishName,
+//     "dishImageUrl": dishImageUrl,
+//     "dishType": dishType,
+//     "dishPrice": dishPrice,
+//     "dishCalories": dishCalories,
+//     "addOns": addOns.map((e) => e.toJson()).toList(),
+//   };
+// }
+// DishOrderHiveModel(this.);
+
+// DishOrderHiveModel.fromJson(Map<String, dynamic> json) {
+//   dishId = json['dishId'];
+//   dishName = json['dishName'];
+//   dishImageUrl = json['dishImageUrl'];
+//   dishType = json['dishType'];
+//   dishPrice = json['dishPrice'];
+//   dishCalories = json['dishCalories'];
+//   addOns = json['addOns'].map((e) => Addons.fromJson(e)).toList();
+// }
 }

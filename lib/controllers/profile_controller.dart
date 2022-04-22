@@ -38,6 +38,7 @@ class ProfileController with ChangeNotifier {
   }
 
   Future<InitialScreenStatus> getUserProfile(String newUserId) async {
+    print(userId);
     final response = await _profileRepo.getUserProfile(userId ?? newUserId);
     if (response.status == ApiResponseStatus.completed) {
       userModel = response.data;

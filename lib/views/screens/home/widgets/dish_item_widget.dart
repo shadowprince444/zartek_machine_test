@@ -96,57 +96,92 @@ class DishItemWidget extends StatelessWidget {
                       if (isOrderPresentInCart) {
                         count = box.get(menuProviderController.selectedRestaurant!.restaurantId)!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
                       }
-                      return CounterWidget(
-                        onTapAdd: () async {
-                          final menuCategoryId = menuProviderController.availableRestaurantList
-                              .where((element) => menuProviderController.selectedRestaurant!.restaurantId == element.restaurantId)
-                              .first
-                              .tableMenuList[tableMenuItemIndex]
-                              .menuCategoryId;
-                          await menuProviderController.onTapAdd(box, dish, menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
-                          // final orderBox = HiveService.getOrderBox();
-                          // OrderModel? order = box.get(
-                          //   menuProviderController.selectedRestaurant?.restaurantId ?? "",
-                          // );
-                          // if (order != null) {
-                          //   var tempList = order.orderListMap.where((element) => element.dishId == dish.dishId);
-                          //   DishOrderHiveModel? dishOrderModel = tempList.isNotEmpty ? tempList.first : null;
-                          //   if (dishOrderModel != null) {
-                          //     dishOrderModel.quantity++;
-                          //     order.calculateTotalCost();
-                          //   } else {
-                          //     order.orderListMap.add(
-                          //       dish.dishOrderHiveModelFromDishModel(),
-                          //     );
-                          //   }
-                          // } else {
-                          //   order = menuProviderController.buildOrder(Provider.of<Auth>(context, listen: false).userId, tableMenuItemIndex, dish.dishId);
-                          //   box.put(menuProviderController.selectedRestaurant?.restaurantId ?? "dummyId", order!);
-                          // }
-                          // order?.save();
-                        },
-                        onTapRemove: () async {
-                          await menuProviderController.onTapRemove(box, dish);
-                          // OrderModel? order = box.get(
-                          //   menuProviderController.selectedRestaurant?.restaurantId ?? "",
-                          // );
-                          // if (order != null) {
-                          //   var tempList = order.orderListMap.where((element) => element.dishId == dish.dishId);
-                          //   DishOrderHiveModel? dishOrderModel = tempList.isNotEmpty ? tempList.first : null;
-                          //   if (dishOrderModel != null) {
-                          //     if (dishOrderModel.quantity > 1) {
-                          //       dishOrderModel.quantity--;
-                          //     } else {
-                          //       order.orderListMap.remove(dishOrderModel);
-                          //     }
-                          //     order.calculateTotalCost();
-                          //   }
-                          //   order?.save();
-                          // }
-                        },
-                        count: count,
-                        //   );
-                        // }
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CounterWidget(
+                            onTapAdd: () async {
+                              final menuCategoryId = menuProviderController.availableRestaurantList
+                                  .where((element) => menuProviderController.selectedRestaurant!.restaurantId == element.restaurantId)
+                                  .first
+                                  .tableMenuList[tableMenuItemIndex]
+                                  .menuCategoryId;
+                              await menuProviderController.onTapAdd(box, dish, menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
+                              // final orderBox = HiveService.getOrderBox();
+                              // OrderModel? order = box.get(
+                              //   menuProviderController.selectedRestaurant?.restaurantId ?? "",
+                              // );
+                              // if (order != null) {
+                              //   var tempList = order.orderListMap.where((element) => element.dishId == dish.dishId);
+                              //   DishOrderHiveModel? dishOrderModel = tempList.isNotEmpty ? tempList.first : null;
+                              //   if (dishOrderModel != null) {
+                              //     dishOrderModel.quantity++;
+                              //     order.calculateTotalCost();
+                              //   } else {
+                              //     order.orderListMap.add(
+                              //       dish.dishOrderHiveModelFromDishModel(),
+                              //     );
+                              //   }
+                              // } else {
+                              //   order = menuProviderController.buildOrder(Provider.of<Auth>(context, listen: false).userId, tableMenuItemIndex, dish.dishId);
+                              //   box.put(menuProviderController.selectedRestaurant?.restaurantId ?? "dummyId", order!);
+                              // }
+                              // order?.save();
+                            },
+                            onTapRemove: () async {
+                              await menuProviderController.onTapRemove(box, dish);
+                              // OrderModel? order = box.get(
+                              //   menuProviderController.selectedRestaurant?.restaurantId ?? "",
+                              // );
+                              // if (order != null) {
+                              //   var tempList = order.orderListMap.where((element) => element.dishId == dish.dishId);
+                              //   DishOrderHiveModel? dishOrderModel = tempList.isNotEmpty ? tempList.first : null;
+                              //   if (dishOrderModel != null) {
+                              //     if (dishOrderModel.quantity > 1) {
+                              //       dishOrderModel.quantity--;
+                              //     } else {
+                              //       order.orderListMap.remove(dishOrderModel);
+                              //     }
+                              //     order.calculateTotalCost();
+                              //   }
+                              //   order?.save();
+                              // }
+                            },
+                            count: count,
+                            //   );
+                            // }
+                          ),
+                          Visibility(
+                              visible: dish.addonCat.isNotEmpty,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // if (count != 0) {
+                                  //   showDialog(
+                                  //       barrierColor: Colors.transparent,
+                                  //       context: context,
+                                  //       builder: (context) => AddOnCategoryDialogueBox(
+                                  //             orderModel: box.get(menuProviderController.selectedRestaurant?.restaurantId)!,
+                                  //             addOnCatList: dish.addonCat,
+                                  //             dishOrderHiveModel: box
+                                  //                 .get(menuProviderController.selectedRestaurant?.restaurantId)!
+                                  //                 .orderListMap
+                                  //                 .firstWhere((element) => element.dishId == dish.dishId),
+                                  //           ));
+                                  // }
+                                  //
+                                },
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Customizations available",
+                                    style: AppTheme.textThemes.bodyText1.copyWith(
+                                      color: AppTheme.appColors.appPrimaryColorRed,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ))
+                        ],
                       );
                     }),
               ],

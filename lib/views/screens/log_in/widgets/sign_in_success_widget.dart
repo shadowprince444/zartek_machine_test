@@ -48,7 +48,7 @@ class SignInSuccessWidget extends StatelessWidget {
         const VSpace(8),
         LogInButton(
           logoImage: 'assets/images/user_verified_logo.png',
-          backGroundColor: AppTheme.appColors.cF7F7F7,
+          backGroundColor: AppTheme.appColors.appPrimaryColorGreen,
           textColor: Colors.white,
           iconBackGroundColor: Colors.transparent,
           title: "Let's Go",
@@ -58,6 +58,8 @@ class SignInSuccessWidget extends StatelessWidget {
               listen: false,
             );
             print(Provider.of<Auth>(context, listen: false).userId);
+            Provider.of<Auth>(context, listen: false)
+                .store(Provider.of<SignInController>(context, listen: false).token, Provider.of<SignInController>(context, listen: false).userIdForLogIn);
             await profileController.getUserProfile(Provider.of<SignInController>(context, listen: false).userIdForLogIn).then((InitialScreenStatus value) async {
               if (value == InitialScreenStatus.firstLogIn) {
                 Navigator.pushAndRemoveUntil(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:zartek_machine_test/models/hive/add_on_hive_model.dart';
 import 'package:zartek_machine_test/models/hive/dish_order_hive_model.dart';
 import 'package:zartek_machine_test/models/hive/order_model.dart';
 import 'package:zartek_machine_test/models/menu_model.dart';
@@ -136,6 +137,24 @@ class MenuProviderController extends ChangeNotifier {
   Future addDish(OrderModel model, CategoryDishes dish, String menuCategoryId) async {
     model.orderListMap.add(dish.dishOrderHiveModelFromDishModel(menuCategoryId));
     model.calculateTotalCost();
+    await model.save();
+  }
+
+  Future addAddOn(OrderModel model, String dishId, Addons addOn) async {
+    var addOnHiveModel = AddOnHiveModel()
+      ..dishId = addOn.dishId
+      ..addOnPrice = addOn.dishPrice
+      ..addOnCalories = addOn.dishCalories
+      ..addOnId = addOn.dishId
+      ..addOnType = addOn.dishType
+      ..addOnName = addOn.dishName
+      ..quantity = 1;
+    model.orderListMap.firstWhere((element) => element.dishId == dishId).addOns.add(addOnHiveModel);
+    await model.save();
+  }
+
+  Future removeAddOn(OrderModel model, String dishId, Addons addOn) async {
+    model.orderListMap.firstWhere((element) => dishId == element.dishId).addOns.removeWhere((element) => element.dishId == addOn.dishId);
     await model.save();
   }
 

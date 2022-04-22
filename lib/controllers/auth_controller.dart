@@ -9,12 +9,12 @@ class Auth with ChangeNotifier {
   get userId => _userId;
 
   store(String jwt, String userId) {
-    if (userId != null) {
-      print(jwt + "++++++++" + userId);
-      _jwtToken = jwt;
-      _userId = userId;
-      notifyListeners();
-    }
+    // if (userId != null) {
+    print(jwt + "++++++++" + userId);
+    _jwtToken = jwt;
+    _userId = userId;
+    notifyListeners();
+    // }
   }
 
   Future logOut() async {

@@ -18,4 +18,36 @@ class AddOnHiveModel extends HiveObject {
   late int addOnType;
   @HiveField(6)
   late int quantity;
+
+  // AddOnHiveModel(
+  //   this.quantity,
+  //   this.dishId,
+  //   this.addOnName,
+  //   this.addOnType,
+  //   this.addOnId,
+  //   this.addOnCalories,
+  //   this.addOnPrice,
+  // );
+
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     "addOnId": addOnId,
+  //     "dishId": dishId,
+  //     "addOnName": addOnName,
+  //     "addOnCalories": addOnCalories,
+  //     "addOnPrice": addOnPrice,
+  //     "addOnType": addOnType,
+  //     "quantity": quantity,
+  //   };
+  // }
+  //
+  // AddOnHiveModel.fromJson(Map<String, dynamic> json) {
+  //   addOnId = json['addOnId'];
+  //   dishId = json['dishId'];
+  //   addOnName = json['addOnName'];
+  //   addOnCalories = json['addOnCalories'];
+  //   addOnPrice = json['addOnPrice'];
+  //   addOnType = json['addOnType'];
+  //   quantity = json['quantity'];
+  // }
 }

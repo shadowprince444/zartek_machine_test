@@ -47,4 +47,23 @@ class OrderModel extends HiveObject {
   }
 
   getAddedDishCount() => orderListMap.length;
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     "userId": userId,
+  //     "restaurantId": restaurantId,
+  //     "restaurantName": restaurantName,
+  //     "restaurantBranch": restaurantBranch,
+  //     "orderingTime": DateTime.now(),
+  //     "orderListMap": orderListMap.map((e) => e.toJson()).toList()
+  //   };
+  // }
+  //
+  // OrderModel.fromJson(Map<String, dynamic> json) {
+  //   userId = json['userId'];
+  //   restaurantId = json['restaurantId'];
+  //   restaurantName = json['restaurantName'];
+  //   restaurantBranch = json['restaurantBranch'];
+  //   orderingTime = json['orderingTime'];
+  //   orderListMap = json['orderListMap'].map((e) => DishOrderHiveModel.fromJson(e)).toList();
+  // }
 }
