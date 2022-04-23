@@ -8,6 +8,7 @@ import 'package:zartek_machine_test/models/menu_model.dart';
 import 'package:zartek_machine_test/services/hive/hive_services.dart';
 import 'package:zartek_machine_test/utils/size_utils/size_config.dart';
 import 'package:zartek_machine_test/utils/theme/app_theme.dart';
+import 'package:zartek_machine_test/views/screens/home/widgets/add_on_category_dialogue.dart';
 import 'package:zartek_machine_test/views/widgets/counter_widget.dart';
 
 class DishItemWidget extends StatelessWidget {
@@ -97,6 +98,7 @@ class DishItemWidget extends StatelessWidget {
                         count = box.get(menuProviderController.selectedRestaurant!.restaurantId)!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
                       }
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CounterWidget(
@@ -155,20 +157,19 @@ class DishItemWidget extends StatelessWidget {
                               visible: dish.addonCat.isNotEmpty,
                               child: GestureDetector(
                                 onTap: () {
-                                  // if (count != 0) {
-                                  //   showDialog(
-                                  //       barrierColor: Colors.transparent,
-                                  //       context: context,
-                                  //       builder: (context) => AddOnCategoryDialogueBox(
-                                  //             orderModel: box.get(menuProviderController.selectedRestaurant?.restaurantId)!,
-                                  //             addOnCatList: dish.addonCat,
-                                  //             dishOrderHiveModel: box
-                                  //                 .get(menuProviderController.selectedRestaurant?.restaurantId)!
-                                  //                 .orderListMap
-                                  //                 .firstWhere((element) => element.dishId == dish.dishId),
-                                  //           ));
-                                  // }
-                                  //
+                                  if (count != 0) {
+                                    showDialog(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) => AddOnCategoryDialogueBox(
+                                              orderModel: box.get(menuProviderController.selectedRestaurant?.restaurantId)!,
+                                              addOnCatList: dish.addonCat,
+                                              dishOrderHiveModel: box
+                                                  .get(menuProviderController.selectedRestaurant?.restaurantId)!
+                                                  .orderListMap
+                                                  .firstWhere((element) => element.dishId == dish.dishId),
+                                            ));
+                                  }
                                 },
                                 child: SizedBox(
                                   width: double.infinity,

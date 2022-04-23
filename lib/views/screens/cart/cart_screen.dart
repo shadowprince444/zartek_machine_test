@@ -214,76 +214,145 @@ class CartScreen extends StatelessWidget {
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 16.vdp()),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: 24.hdp(),
-              child: Container(
-                padding: EdgeInsets.all(
-                  6.vdp(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 24.hdp(),
+                  child: Container(
+                    padding: EdgeInsets.all(
+                      6.vdp(),
+                    ),
+                    child: Image.asset(
+                      dish.dishType == 2 ? "assets/images/veg_icon.png" : "assets/images/non_veg_icon.png",
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
                 ),
-                child: Image.asset(
-                  dish.dishType == 2 ? "assets/images/veg_icon.png" : "assets/images/non_veg_icon.png",
-                  fit: BoxFit.fitHeight,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        dish.dishName,
+                        style: AppTheme.textThemes.headline1,
+                        maxLines: 4,
+                      ),
+                      const VSpace(8),
+                      Text(
+                        "INR ${dish.dishPrice}",
+                        style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      const VSpace(8),
+                      Text(
+                        "${dish.dishCalories} calories",
+                        style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      const VSpace(24),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    dish.dishName,
-                    style: AppTheme.textThemes.headline1,
-                    maxLines: 4,
-                  ),
-                  const VSpace(8),
-                  Text(
-                    "INR ${dish.dishPrice}",
-                    style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  const VSpace(8),
-                  Text(
-                    "${dish.dishCalories} calories",
-                    style: AppTheme.textThemes.bodyText1.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  const VSpace(24),
-                ],
-              ),
-            ),
-            ValueListenableBuilder<Box<OrderModel>>(
-                valueListenable: HiveService.getOrderBox().listenable(),
-                builder: (context, box, _) {
-                  int count = 0;
-                  final isOrderPresentInCart =
-                      box.get(menuController.selectedRestaurant?.restaurantId)?.orderListMap.where((element) => element.dishId == dish.dishId).isNotEmpty ?? false;
-                  if (isOrderPresentInCart) {
-                    count = orderModel!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
-                  }
-                  return CounterWidget(
-                    onTapAdd: () async {
-                      final categoryDishModel = getCategoryDishModel(menuController, dish);
+                ValueListenableBuilder<Box<OrderModel>>(
+                    valueListenable: HiveService.getOrderBox().listenable(),
+                    builder: (context, box, _) {
+                      int count = 0;
+                      final isOrderPresentInCart =
+                          box.get(menuController.selectedRestaurant?.restaurantId)?.orderListMap.where((element) => element.dishId == dish.dishId).isNotEmpty ?? false;
+                      if (isOrderPresentInCart) {
+                        count = orderModel.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
+                      }
+                      return CounterWidget(
+                        onTapAdd: () async {
+                          final categoryDishModel = getCategoryDishModel(menuController, dish);
 
-                      await menuController.onTapAdd(box, categoryDishModel, dish.menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
-                    },
-                    onTapRemove: () async {
-                      final categoryDishModel = getCategoryDishModel(menuController, dish);
-                      await menuController.onTapRemove(box, categoryDishModel);
-                    },
-                    count: count,
-                  );
-                }),
-            SizedBox(
-              width: 80.vdp(),
-              child: Text(
-                "INR ${(dish.dishPrice * dish.quantity).toStringAsFixed(2)}",
-                textAlign: TextAlign.center,
-                style: AppTheme.textThemes.headline1.copyWith(fontWeight: FontWeight.w600),
-              ),
-            )
+                          await menuController.onTapAdd(box, categoryDishModel, dish.menuCategoryId, Provider.of<Auth>(context, listen: false).userId);
+                        },
+                        onTapRemove: () async {
+                          final categoryDishModel = getCategoryDishModel(menuController, dish);
+                          await menuController.onTapRemove(box, categoryDishModel);
+                        },
+                        count: count,
+                      );
+                    }),
+                SizedBox(
+                  width: 80.vdp(),
+                  child: Text(
+                    "INR ${(dish.dishPrice * dish.quantity).toStringAsFixed(2)}",
+                    textAlign: TextAlign.center,
+                    style: AppTheme.textThemes.headline1.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                )
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.vdp()),
+              child: ValueListenableBuilder<Box<OrderModel>>(
+                  valueListenable: HiveService.getOrderBox().listenable(),
+                  builder: (context, box, _) {
+                    int count = 0;
+                    final isOrderPresentInCart =
+                        box.get(menuController.selectedRestaurant?.restaurantId)?.orderListMap.where((element) => element.dishId == dish.dishId).isNotEmpty ?? false;
+                    if (isOrderPresentInCart) {
+                      count = box.get(menuController.selectedRestaurant!.restaurantId)!.orderListMap.firstWhere((element) => element.dishId == dish.dishId).quantity;
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Visibility(
+                          visible: dish.addOns.isNotEmpty,
+                          child: ListView.separated(
+                              itemCount: dish.addOns.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              separatorBuilder: (context, index) => const VSpace(8),
+                              itemBuilder: (context, addOnIndex) {
+                                var addOn = dish.addOns[addOnIndex];
+
+                                return Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        menuController.removeAddOn(orderModel, dish.dishId, dish.addOns[addOnIndex].dishId);
+                                      },
+                                      child: SizedBox(
+                                        height: 20.vdp(),
+                                        width: 20.vdp(),
+                                        child: Icon(
+                                          Icons.check_box,
+                                          color: AppTheme.appColors.notificationGreen,
+                                          size: 20.vdp(),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        addOn.addOnName,
+                                        style: AppTheme.textThemes.headline1,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 60.hdp(),
+                                      child: Text(
+                                        "INR ${addOn.addOnPrice}",
+                                        style: AppTheme.textThemes.subtitle2.copyWith(
+                                          color: AppTheme.appColors.notificationGreen,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }),
+                        )
+                      ],
+                    );
+                  }),
+            ),
           ],
         ),
       ),

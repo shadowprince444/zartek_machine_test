@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zartek_machine_test/controllers/auth_controller.dart';
 import 'package:zartek_machine_test/controllers/profile_controller.dart';
 import 'package:zartek_machine_test/main.dart';
+import 'package:zartek_machine_test/services/hive/hive_services.dart';
 import 'package:zartek_machine_test/utils/size_utils/size_config.dart';
 import 'package:zartek_machine_test/utils/theme/app_theme.dart';
 import 'package:zartek_machine_test/views/widgets/circular_profile_avatar.dart';
@@ -71,7 +72,7 @@ class AppDrawer extends StatelessWidget {
                   DrawerTile(
                     onTap: () async {
                       await Provider.of<Auth>(context, listen: false).logOut();
-
+                      await HiveService.getOrderBox().clear();
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const InitialScreen()),

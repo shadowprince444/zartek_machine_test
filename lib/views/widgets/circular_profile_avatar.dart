@@ -79,7 +79,7 @@ class ProfileAvatar extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.center,
             child: Visibility(
               visible: isEditable && (imagePath.isEmpty),
               child: GestureDetector(
@@ -87,8 +87,8 @@ class ProfileAvatar extends StatelessWidget {
                 child: Center(
                   child: Icon(
                     Icons.add_a_photo_rounded,
-                    size: imageSize / 8,
-                    color: AppTheme.appColors.appPrimaryColorWhite,
+                    size: imageSize / 2,
+                    color: AppTheme.appColors.darkGreyBottomSheet,
                   ),
                 ),
               ),

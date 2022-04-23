@@ -122,7 +122,7 @@ class MenuProviderController extends ChangeNotifier {
       DishOrderHiveModel? dishOrderModel = tempList.isNotEmpty ? tempList.first : null;
       if (dishOrderModel != null) {
         await removeDishQuantity(order, dishOrderModel.dishId);
-        order?.calculateTotalCost();
+        order.calculateTotalCost();
       } else {
         return;
       }
@@ -150,11 +150,15 @@ class MenuProviderController extends ChangeNotifier {
       ..addOnName = addOn.dishName
       ..quantity = 1;
     model.orderListMap.firstWhere((element) => element.dishId == dishId).addOns.add(addOnHiveModel);
+    model.calculateTotalCost();
+
     await model.save();
   }
 
-  Future removeAddOn(OrderModel model, String dishId, Addons addOn) async {
-    model.orderListMap.firstWhere((element) => dishId == element.dishId).addOns.removeWhere((element) => element.dishId == addOn.dishId);
+  Future removeAddOn(OrderModel model, String dishId, String addOnId) async {
+    model.orderListMap.firstWhere((element) => dishId == element.dishId).addOns.removeWhere((element) => element.dishId == addOnId);
+    model.calculateTotalCost();
+
     await model.save();
   }
 
